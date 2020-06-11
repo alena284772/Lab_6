@@ -18,14 +18,46 @@ public class ClientConnection {
     Boolean isworking = true;
     private HistoryList historyList;
     private static ArrayList<String> files = new ArrayList<String>();
-    SocketAddress socketAddress = new InetSocketAddress(inetAddress, 7415);
+    SocketAddress socketAddress;
     SocketChannel outcoming;
 
     public ClientConnection() throws UnknownHostException {
-        inetAddress = InetAddress.getLocalHost();
         isConnected = false;
         fromclient = new Scanner(System.in);
         historyList = new HistoryList(6);
+
+        System.out.println("Enter a server address");
+        String add = "";
+        try {
+            while (add == "") {
+                String a = fromclient.nextLine();
+                add = a;
+                System.out.println("Server address is now: " + add);
+            }
+            System.out.println("Enter a port");
+            int port = -1;
+            while (port == -1) {
+                try {
+                    int p = Integer.valueOf(fromclient.nextLine().trim());
+                    if (p < 0 || p > 65535) {
+                        System.out.println("Wrong port was entered");
+                    } else {
+                        port = p;
+                        System.out.println("Port is now: " + port);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Entered value is not a number");
+                }
+            }
+            socketAddress = new InetSocketAddress(add, port);
+            System.out.println("You can start working");
+
+        }catch (NoSuchElementException e){
+            System.out.println("End of input");
+            System.exit(0);
+
+        }
+
     }
 
     public void connect() throws IOException {
